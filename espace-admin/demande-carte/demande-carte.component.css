@@ -1,0 +1,28 @@
+.card-requests-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .card-requests-table th, .card-requests-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #2d1a42;
+  }
+  
+  .card-requests-table th {
+    background-color: #2a1250;
+  }
+  
+  .card-requests-table button {
+    padding: 5px 10px;
+    font-size: 14px;
+  }
+  
+  .card-requests-table button:first-child {
+    margin-right: 5px;
+  }
+  
+  .card-requests-table button:hover {
+    background-color: #dddddd;
+  }
+  

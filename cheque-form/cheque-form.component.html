@@ -1,0 +1,26 @@
+<h2>Demande de chéquier</h2>
+
+<p *ngIf="messageSent">{{ message }}</p>
+
+<form *ngIf="Uid && !messageSent && !demandeEnCours" #chequeForm="ngForm" (ngSubmit)="onSubmit(chequeForm)">
+  <div>
+    <label for="rib">RIB</label>
+    <input type="text" name="rib" id="rib" [(ngModel)]="rib" required>
+    <p *ngIf="!ribMatch">Le RIB saisi ne correspond pas au RIB enregistré.</p>
+
+  </div>
+  <div>
+    <label for="nombreChequiers">Nombre de chéquiers</label>
+    <select name="nombreChequiers" id="nombreChequiers" [(ngModel)]="nombreChequiers" required>
+      <option value="" disabled>Choisissez le nombre de chéquiers</option>
+      <option *ngFor="let nombre of nombreChequiersOptions" [value]="nombre">{{ nombre }}</option>
+    </select>
+  </div>
+
+  
+  
+  <button type="submit" [disabled]="messageSent">Envoyer la demande</button>
+  
+</form>
+
+<p *ngIf="Uid && !messageSent && demandeEnCours">Votre demande est : {{ dataProfile.demande }}</p>
