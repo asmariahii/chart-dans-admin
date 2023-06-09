@@ -1,17 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { AuthService } from '../shared/auth.service';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { Router } from '@angular/router';
+import { AuthService } from '../shared/auth.service';
 
-interface User {
+interface DemandeCartes {
   f1Name: string;
   rib: string;
   dateExpiration: string;
   uid: string;
   cin: string;
-  cardType: string; // Add the cardType property
-
+  cardType: string;
+  email: string;
 }
 
 @Component({
@@ -19,54 +18,78 @@ interface User {
   templateUrl: './card-form.component.html',
   styleUrls: ['./card-form.component.css']
 })
-export class CardFormComponent {
-  demande: User = {
-    f1Name: '',
-    rib: '',
-    dateExpiration: '',
-    uid: '',
-    cin: '',
-    cardType: '', // Add the cardType property
+export class CardFormComponent implements OnInit {
+  formSubmitted: boolean = false;
+  cardType: string = '';
+  CardTypeOptions = ['Gold', 'Visa', 'MasterCard'];
+  demandeEnvoyee: boolean = false;
+  successMessage: string = '';
+  selectedCardTypes: string[] = [];
+  Uid: string | null = null;
 
-  };
+  constructor(private fs: AngularFirestore, private as: AuthService) { }
 
-  ribMatch = true; // Propriété pour indiquer si le RIB correspond
-  cinMatch = true; // Propriété pour indiquer si le CIN correspond
+  ngOnInit(): void {
+    this.as.getUser().subscribe(user => {
+      if (user) {
+        this.Uid = user.uid;
 
-
-  constructor(
-    private authService: AuthService,
-    private firestore: AngularFirestore,
-    private router: Router
-  ) {}
-
-  async onSubmit(form: NgForm) {
-    const uid = await this.authService.getUID();
-    this.demande.uid = uid;
-
-    try {
-      // Fetch the user from the "users" collection
-      const userRef = this.firestore.collection('users').doc(uid);
-      const userDoc = await userRef.get().toPromise();
-
-      if (userDoc && userDoc.exists) {
-        const userData = userDoc.data() as User;
-        
-        if (userData.rib === this.demande.rib && userData.cin === this.demande.cin) {
-          // RIB and CIN match, proceed with the submission
-          await userRef.set(this.demande, { merge: true });
-          console.log('Demande de carte enregistrée avec succès.');
-          this.router.navigate(['/home']);
-        } else {
-          this.ribMatch = false; // Le RIB ne correspond pas
-          this.cinMatch = false; // Le CIN ne correspond pas
+        const selectedCardTypes = localStorage.getItem('selectedCardTypes');
+        if (selectedCardTypes) {
+          this.selectedCardTypes = JSON.parse(selectedCardTypes);
         }
       } else {
-        console.error("Utilisateur introuvable.");
-        // Handle the error or display a message to the user
+        console.error('Erreur lors de la récupération de l\'UID de l\'utilisateur.');
       }
-    } catch (error) {
-      console.error("Erreur lors de l'enregistrement de la demande de carte :", error);
+    });
+
+    const formSubmitted = localStorage.getItem('formSubmitted');
+    if (formSubmitted) {
+      this.formSubmitted = true;
     }
+  }
+
+  async AddDemandeCartes(form: NgForm): Promise<void> {
+    this.selectedCardTypes.push(this.cardType);
+
+    localStorage.setItem('selectedCardTypes', JSON.stringify(this.selectedCardTypes));
+    try {
+      const email = await this.as.getUserEmail();
+      const cin = await this.as.getUserCin();
+      const rib = await this.as.getUserRib();
+  
+      const demandeCartes: DemandeCartes = {
+        f1Name: '',
+        rib: rib || '',
+        dateExpiration: '',
+        uid: this.Uid || '', // Utilisez une valeur par défaut si this.Uid est null
+        cin: cin || '',
+        cardType: this.cardType || '',
+        email: email || '',
+      };
+  
+      this.fs.collection<DemandeCartes>('DemandeCartes').add(demandeCartes)
+        .then(() => {
+          form.resetForm();
+          this.cardType = '';
+          this.formSubmitted = true;
+          this.demandeEnvoyee = true;
+          this.successMessage = 'Votre demande de cartes a été envoyée avec succès !';
+          // Store the form submission status in local storage
+          localStorage.setItem('formSubmitted', 'true');
+        })
+        .catch(error => {
+          console.error('Erreur lors de l\'ajout de la demande de cartes :', error);
+          this.formSubmitted = false;
+          this.demandeEnvoyee = false;
+          this.successMessage = '';
+        });
+    } catch (error) {
+      console.error('Erreur lors de la récupération de l\'e-mail, du CIN ou du RIB de l\'utilisateur :', error);
+    }
+  }
+   
+  isCardTypeAlreadySelected(option: string): boolean {
+    return this.selectedCardTypes.includes(option);
   }
 }

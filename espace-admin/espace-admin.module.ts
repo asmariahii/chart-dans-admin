@@ -15,6 +15,12 @@ import { MatSortModule } from '@angular/material/sort';
 import { DemandeChequeComponent } from './demande-cheque/demande-cheque.component';
 import { DemandeCarteComponent } from './demande-carte/demande-carte.component';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MessagingService } from '../service/messaging.service';
+
 
 
 @NgModule({
@@ -23,6 +29,7 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
     UsersComponent,
     DemandeChequeComponent,
     DemandeCarteComponent,
+    DashboardComponent,
   ],
   imports: [
     CommonModule,
@@ -36,8 +43,19 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
     MatTableModule,
     MatSortModule,
     AngularFirestoreModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatSnackBarModule, // Ajoutez cette ligne pour importer le module MatSnackBar
 
     
+    
+
+    
+  ],
+  providers: [MessagingService,
+    
   ]
+
+  
 })
 export class EspaceAdminModule { }

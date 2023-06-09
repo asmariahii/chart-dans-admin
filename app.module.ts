@@ -31,6 +31,8 @@ import { RegisterComponent } from './register/register.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
+import { AngularFireMessagingModule } from '@angular/fire/compat/messaging';
+
 
 
 
@@ -44,6 +46,8 @@ import { MatTableModule } from '@angular/material/table';
     FooterComponent,
     
     RegisterComponent,
+    
+         
     
   ],
   imports: [
@@ -71,7 +75,8 @@ import { MatTableModule } from '@angular/material/table';
     MatFormFieldModule,
     MatInputModule,
     MatListModule,
-    MatTableModule
+    MatTableModule,
+    AngularFireMessagingModule
 
 
 

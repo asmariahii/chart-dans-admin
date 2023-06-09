@@ -1,13 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
-import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
-interface User {
-  nom: string;
-  email: string;
+interface DemandeCheque {
   uid: string;
-  demande: string;
-  // Ajoutez d'autres champs si nécessaire
+  nombreChequier: number | null;
+  email: string;
+  rib: string;
+  cin: string;
+  statut: string;
+  action: string;
+  docId?: string; // Added property for document ID
 }
 
 @Component({
@@ -16,21 +21,56 @@ interface User {
   styleUrls: ['./demande-cheque.component.css']
 })
 export class DemandeChequeComponent implements OnInit {
-  usersCollection!: AngularFirestoreCollection<User>;
-  users!: Observable<User[]>;
-  displayedColumns: string[] = ['nom', 'email', 'uid', 'demande']; // Ajoutez d'autres noms de colonnes si nécessaire
+  demandeChequeCollection: AngularFirestoreCollection<DemandeCheque> | undefined;
+  demandeCheque: any;
+  dataSource: MatTableDataSource<DemandeCheque>;
 
-  constructor(private firestore: AngularFirestore) { }
+  displayedColumns: string[] = ['email', 'nombreChequier', 'rib', 'cin', 'action', 'statut'];
+
+  constructor(private fs: AngularFirestore, private snackBar: MatSnackBar) {
+    this.dataSource = new MatTableDataSource<DemandeCheque>([]);
+  }
 
   ngOnInit(): void {
-    this.usersCollection = this.firestore.collection<User>('users');
-    this.users = this.usersCollection.valueChanges();
+    this.demandeChequeCollection = this.fs.collection<DemandeCheque>('DemandeCheque');
+    this.fetchDemandeChequeData();
   }
 
-  updateDemande(user: User, demande: string): void {
-    // Mettez à jour le champ 'demande' de l'utilisateur dans la collection Firestore
-    this.usersCollection.doc(user.uid).update({ demande: demande })
-      .then(() => console.log('Demande mise à jour avec succès'))
-      .catch((error) => console.log('Erreur lors de la mise à jour de la demande:', error));
+  fetchDemandeChequeData(): void {
+    if (this.demandeChequeCollection) {
+      this.demandeCheque = this.demandeChequeCollection.snapshotChanges().pipe(
+        map(actions =>
+          actions.map(a => {
+            const data = a.payload.doc.data() as DemandeCheque;
+            const docId = a.payload.doc.id;
+            return { docId, ...data };
+          })
+        )
+      );
+      this.demandeCheque.subscribe((data: DemandeCheque[]) => {
+        this.dataSource.data = data;
+      });
+    }
   }
+
+  refuserDemande(demande: DemandeCheque): void {
+    demande.statut = 'Demande refusée';
+    this.updateDemande(demande);
+    this.snackBar.open('Demande de chèque refusée', 'Fermer', { duration: 3000 });
+  }
+
+  accepterDemande(demande: DemandeCheque): void {
+    demande.statut = 'Demande acceptée';
+    this.updateDemande(demande);
+    this.snackBar.open('Demande de chèque acceptée', 'Fermer', { duration: 3000 });
+  }
+
+  private updateDemande(demande: DemandeCheque): void {
+    if (this.demandeChequeCollection && demande.docId) {
+      // Mettez à jour la demande dans la base de données
+      const { docId, ...updatedDemande } = demande;
+      this.demandeChequeCollection.doc(docId).update(updatedDemande);
+    }
+  }
+  
 }

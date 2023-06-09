@@ -69,7 +69,7 @@ export class AccountDetailsComponent implements OnInit {
       Operation: this.transactionOperation,
       typeOperation: this.transactionType,
       reference: this.transactionReference,
-      Montant: this.transactionAmount !== null ? this.transactionAmount.toString() : '',
+Montant: this.transactionAmount !== null ? this.transactionAmount.toString() : '',
     };
   
     const userConnect = localStorage.getItem("userConnect");
@@ -94,4 +94,5 @@ export class AccountDetailsComponent implements OnInit {
         });
     }
   }
+  
 }

@@ -16,14 +16,19 @@
           <form #accountForm="ngForm" (ngSubmit)="submitAccountForm(accountForm)">
             <div class="form-group">
               <label for="accountType">Account Type</label>
-              <select id="accountType" class="form-control" name="accountType" required [(ngModel)]="newAccount.account['accountType']">
+              <select id="accountType" class="form-control" name="accountType" required [(ngModel)]="newAccount.accountType">
                 <option value="" disabled selected>Choisir un type de compte</option>
-                <option value="Compte Epargne">Compte Epargne</option>
-                <option value="Compte Chèque">Compte Chèque</option>
+                <ng-container *ngIf="dataProfile.accountType === 'epargne'">
+                  <option value="chequier">Compte Chèque</option>
+                </ng-container>
+                <ng-container *ngIf="dataProfile.accountType === 'chequier'">
+                  <option value="epargne">Compte Epargne</option>
+                </ng-container>
               </select>
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
           </form>
+          
         </div>
       </div>
     </div>
@@ -65,7 +70,7 @@
         <div class="col-8">
           <div class="card-body">
             <h2 class="h4 pb-1 mb-2">
-              <a class="m-0" routerLink="/details/">{{ account.accountType }}</a>
+              <a class="m-0" routerLink="/details/">Compte {{ account.accountType }}</a>
             </h2>
             <p class="m-0">RIB: {{ account.rib }}</p>
   
@@ -77,5 +82,3 @@
         </div>
       </div>
     </div>
-  
-    

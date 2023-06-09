@@ -1,25 +1,17 @@
-<form (ngSubmit)="onSubmit(cardForm)" #cardForm="ngForm">
-  <div>
-    <label for="rib">RIB:</label>
-    <label *ngIf="!ribMatch" class="error-message" for="numeroCompte">
-      <mat-error>Le RIB ne correspond pas à celui de l'utilisateur connecté.</mat-error>
-    </label>
-    <input type="text" id="numeroCompte" name="numeroCompte" [(ngModel)]="demande.rib" required>
-  </div>
-  <div>
-    <label for="cin">CIN:</label>
-    <label *ngIf="!cinMatch" class="error-message" for="cin">
-      <mat-error>Le CIN ne correspond pas à celui de l'utilisateur connecté.</mat-error>
-    </label>
-    <input type="text" id="cin" name="cin" [(ngModel)]="demande.cin" required>
-  </div>
-  <div>
-    <label for="cardType">Type de carte:</label>
-    <select id="cardType" name="cardType" [(ngModel)]="demande.cardType" required>
-      <option value="Visa">Visa</option>
-      <option value="Gold">Gold</option>
-      <option value="MasterCard">MasterCard</option>
-    </select>
-  </div>
-  <button type="submit" [disabled]="!cardForm.valid">Submit</button>
-</form>
+<div>
+  <h2>Demande de cartes</h2>
+  <p *ngIf="successMessage">{{ successMessage }}</p>
+
+  <form #form="ngForm" (ngSubmit)="AddDemandeCartes(form)">
+    <div class="form-group">
+      <label for="cardType">Type de carte</label>
+      <select class="form-control" id="cardType" name="cardType" [(ngModel)]="cardType" required>
+        <option *ngFor="let option of CardTypeOptions" [value]="option" [disabled]="isCardTypeAlreadySelected(option)">
+          {{ option }}
+        </option>
+      </select>
+    </div>
+
+    <button type="submit" [disabled]="!cardType && !form.valid">Envoyer la demande</button>
+  </form>
+</div>

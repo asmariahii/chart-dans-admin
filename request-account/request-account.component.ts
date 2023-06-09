@@ -14,6 +14,8 @@ interface UserData {
   account: { [key: string]: UserProfile };
   solde: string;
   rib: string;
+  accountType: string;
+
 }
 
 interface CardRequest {
@@ -44,7 +46,9 @@ export class RequestAccountComponent implements OnInit {
   newAccount: UserData = {
     account: {},
     solde: '10.000',
-    rib: ''
+    rib: '',
+    accountType: ''
+
   };
   userAccounts: UserProfile[] = [];
   cardRequest: CardRequest = {

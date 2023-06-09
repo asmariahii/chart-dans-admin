@@ -1,27 +1,43 @@
-<h2>Liste des demandes de cartes</h2>
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+  <ng-container matColumnDef="email">
+    <th mat-header-cell *matHeaderCellDef>Email</th>
+    <td mat-cell *matCellDef="let demande">{{ demande.email }}</td>
+  </ng-container>
 
-<table class="card-requests-table">
-  <thead>
-    <tr>
-      <th>Nom</th>
-      <th>RIB</th>
-      <th>Date de demande</th>
-      <th>Statut</th>
-      <th>Type de carte</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let demande of demandes | async">
-      <td>{{ demande.f1Name }}</td>
-      <td>{{ demande.rib }}</td>
-      <td>{{ demande.dateExpiration }}</td>
-      <td>{{ demande.statut }}</td>
-      <td>{{ demande.cardType }}</td> <!-- Display the cardType field -->
-      <td>
-        <button (click)="approveDemande(demande)">Approuver</button>
-        <button (click)="rejectDemande(demande)">Rejeter</button>
-      </td>
-    </tr>
-  </tbody>
+  <ng-container matColumnDef="cin">
+    <th mat-header-cell *matHeaderCellDef>CIN</th>
+    <td mat-cell *matCellDef="let demande">{{ demande.cin }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="rib">
+    <th mat-header-cell *matHeaderCellDef>RIB</th>
+    <td mat-cell *matCellDef="let demande">{{ demande.rib }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="cardType">
+    <th mat-header-cell *matHeaderCellDef>Type de carte</th>
+    <td mat-cell *matCellDef="let demande">{{ demande.cardType }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="action">
+    <th mat-header-cell *matHeaderCellDef>Action</th>
+    <td mat-cell *matCellDef="let demande">
+      <div class="button-container">
+        <button mat-icon-button class="accept-button" (click)="accepterDemande(demande)">
+          <mat-icon>check</mat-icon>
+        </button>
+        <button mat-icon-button class="refuse-button" (click)="refuserDemande(demande)">
+          <mat-icon>clear</mat-icon>
+        </button>
+      </div>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="statut">
+    <th mat-header-cell *matHeaderCellDef>Statut</th>
+    <td mat-cell *matCellDef="let demande">{{ demande.statut }}</td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 </table>

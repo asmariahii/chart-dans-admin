@@ -1,39 +1,30 @@
+<div *ngIf="demandesUtilisateur.length > 0">
 
-
-<div *ngIf="(user$ | async) as user">
-
-<h1 class="pb-4">Mes Cartes</h1>
-
-<div class="ps-md-3 ps-lg-0 mt-md-2 pt-md-4 pb-md-2" *ngIf="user.approved">
-    <h2 class="h5 text-white mb-4">Vos cartes du compte {{ user.rib }}</h2>
-
-    <!-- Item -->
-    <div class="card d-sm-flex flex-sm-row align-items-sm-center justify-content-between border-0 shadow-sm p-3 p-md-4 mb-4">
-      <div class="d-flex align-items-center pe-sm-3">
-        <img *ngIf="user.cardType === 'Gold'" src="assets/img/gold.png" width="84" alt="Gold Card">
-        <img *ngIf="user.cardType === 'visa'" src="assets/img/account/visacard.svg" width="84" alt="Visa Card">
-        <!-- Ajoutez d'autres directives *ngIf pour d'autres types de carte -->
-        <div class="ps-3 ps-sm-4">
-          <h6 class="mb-2">**** **** **** 4298 <span class="badge bg-success ms-1">Primary</span></h6>
-          <div class="fs-sm">Expiration 09/26</div>
+  <h1 class="pb-4">Mes Cartes</h1>
+  
+  <ng-container *ngFor="let demande of demandesUtilisateur">
+    <div class="ps-md-3 ps-lg-0 mt-md-2 pt-md-4 pb-md-2" *ngIf="demande.statut === 'Demande acceptée'">
+      <h2 class="h5 text-white mb-4">Vos cartes du compte {{ demande.rib }}</h2>
+  
+      <!-- Item -->
+      <div class="card d-sm-flex flex-sm-row align-items-sm-center justify-content-between border-0 shadow-sm p-3 p-md-4 mb-4">
+        <div class="d-flex align-items-center pe-sm-3">
+          <img *ngIf="demande.cardType === 'Gold'" src="assets/img/gold.png" width="84" alt="Gold Card">
+          <img *ngIf="demande.cardType === 'Visa'" src="assets/img/account/visacard.svg" width="84" alt="Visa Card">
+          <!-- Ajoutez d'autres directives *ngIf pour d'autres types de carte -->
+          <div class="ps-3 ps-sm-4">
+            <h6 class="mb-2">**** **** **** 4298 <span class="badge bg-success ms-1">Primary</span></h6>
+            <div class="fs-sm">Expiration 02/26</div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-end pt-3 pt-sm-0">
+         
         </div>
       </div>
-      <div class="d-flex justify-content-end pt-3 pt-sm-0">
-       
-      </div>
     </div>
-    
-    </div>
-    <div *ngIf="!user.approved && user.statut === 'rejected'">
-      <p>Votre demande de carte a été rejetée.</p>
-    </div>
-    <div *ngIf="!user.approved && user.statut !== 'rejected'">
+  
+    <div *ngIf="demande.statut === 'Demande en attente'">
       <p>Votre demande de carte n'a pas encore été approuvée.</p>
     </div>
-  </div>
-    
-    <!-- Item -->
-
-
-    <!-- Item -->
- 
+  </ng-container>
+</div>

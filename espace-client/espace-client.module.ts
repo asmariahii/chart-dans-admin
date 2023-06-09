@@ -18,6 +18,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTableModule } from '@angular/material/table';
+import { MatCardModule } from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -39,14 +41,14 @@ import { MatTableModule } from '@angular/material/table';
     MatListModule,
     MatIconModule,
     AngularFirestoreModule,
-    MatFormFieldModule,    MatTableModule // Ajoutez MatTableModule dans la liste des imports
-
+    MatFormFieldModule,    MatTableModule ,// Ajoutez MatTableModule dans la liste des imports
+    MatCardModule,
+    MatInputModule
 
 
 
     
   ],
-  exports: [EspaceClientComponent] 
 
 })
 export class EspaceClientModule { }

@@ -1,18 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-interface User {
-  f1Name: string;
-  rib: string;
-  dateExpiration: string;
-  uid: string;
+interface DemandeCartes {
+  email: string;
   cin: string;
-  approved: boolean;
-  statut: string;
+  rib: string;
   cardType: string;
+  action: string;
+  statut: string;
+  docId?: string;
+  uid: string;
 }
 
 @Component({
@@ -21,19 +21,37 @@ interface User {
   styleUrls: ['./cartes.component.css']
 })
 export class CartesComponent implements OnInit {
-  user$: Observable<User | undefined> = of(undefined);
+  demandeCartesCollection: AngularFirestoreCollection<DemandeCartes>;
+  demandesUtilisateur: DemandeCartes[] = [];
+  uidUtilisateurConnecte = ''; // Initialize with an empty string
 
-  constructor(private firestore: AngularFirestore, private auth: AngularFireAuth) { }
+  constructor(private fs: AngularFirestore, private afAuth: AngularFireAuth) {
+    this.demandeCartesCollection = this.fs.collection<DemandeCartes>('DemandeCartes');
+  }
 
   ngOnInit(): void {
-    this.user$ = this.auth.user.pipe(
-      switchMap((user: any) => {
-        if (user) {
-          return this.firestore.collection<User>('users').doc<User>(user.uid).valueChanges();
-        } else {
-          return of(undefined);
-        }
-      })
-    );
+    this.afAuth.authState.subscribe(user => {
+      if (user) {
+        this.uidUtilisateurConnecte = user.uid;
+        this.fetchDemandesUtilisateur();
+      }
+    });
+  }
+
+  fetchDemandesUtilisateur(): void {
+    this.demandeCartesCollection.snapshotChanges().pipe(
+      map(actions =>
+        actions.map(a => {
+          const data = a.payload.doc.data() as DemandeCartes;
+          const docId = a.payload.doc.id;
+          return { docId, ...data };
+        })
+      )
+    ).subscribe((data: DemandeCartes[]) => {
+      // Filtrer les demandes de cartes de l'utilisateur connecté
+      this.demandesUtilisateur = data.filter(demande =>
+        demande.uid === this.uidUtilisateurConnecte
+      );
+    });
   }
 }
