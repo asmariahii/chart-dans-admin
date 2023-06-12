@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ActivatedRoute } from '@angular/router';
+import Chart from 'chart.js/auto';
+
 
 interface Account {
   id: string;
@@ -17,6 +19,7 @@ interface Account {
   styleUrls: ['./account-details.component.css']
 })
 export class AccountDetailsComponent implements OnInit {
+  
   startDate: string = '';
   endDate: string = '';
   transactionDate: string = '';
@@ -40,8 +43,37 @@ export class AccountDetailsComponent implements OnInit {
         .valueChanges()
         .subscribe(transactions => {
           this.filteredAccount = transactions.map(transaction => transaction as Account);
+  
+          // Création du graphique des transactions
+          this.createTransactionChart();
         });
     }
+  }
+  createTransactionChart() {
+    const transactionDates = this.filteredAccount.map(transaction => transaction.dateOperation);
+    const transactionOperations = this.filteredAccount.map(transaction => transaction.Operation);
+  
+    const chartElement = document.getElementById('transactionChart') as HTMLCanvasElement;
+    const ctx = chartElement.getContext('2d');
+  
+    if (ctx) {
+      new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: transactionDates,
+        datasets: [{
+          label: 'Transactions',
+          data: transactionOperations,
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        // Spécifiez vos options de configuration du graphique ici
+      }
+    });
+  }
   }
 
   filterByDate() {

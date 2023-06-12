@@ -11,6 +11,9 @@ interface DemandeCartes {
   cin: string;
   cardType: string;
   email: string;
+  statut: string; // Make the statut property optional
+  accountType: string; // Ajoutez la propriété accountType à l'interface
+
 }
 
 @Component({
@@ -26,6 +29,10 @@ export class CardFormComponent implements OnInit {
   successMessage: string = '';
   selectedCardTypes: string[] = [];
   Uid: string | null = null;
+  statut: string = 'Demande en attente'; // Initialisez le statut à "Demande en attente"
+  newAccount = {
+    accountType: '' // Initial value for account type
+  }
 
   constructor(private fs: AngularFirestore, private as: AuthService) { }
 
@@ -57,7 +64,7 @@ export class CardFormComponent implements OnInit {
       const email = await this.as.getUserEmail();
       const cin = await this.as.getUserCin();
       const rib = await this.as.getUserRib();
-  
+
       const demandeCartes: DemandeCartes = {
         f1Name: '',
         rib: rib || '',
@@ -66,8 +73,11 @@ export class CardFormComponent implements OnInit {
         cin: cin || '',
         cardType: this.cardType || '',
         email: email || '',
+        statut: 'Demande en attente', // Initialisez le statut à "Demande en attente"
+        accountType: this.newAccount.accountType || '' // Ajoutez la propriété accountType avec sa valeur
+
       };
-  
+
       this.fs.collection<DemandeCartes>('DemandeCartes').add(demandeCartes)
         .then(() => {
           form.resetForm();
@@ -88,7 +98,7 @@ export class CardFormComponent implements OnInit {
       console.error('Erreur lors de la récupération de l\'e-mail, du CIN ou du RIB de l\'utilisateur :', error);
     }
   }
-   
+
   isCardTypeAlreadySelected(option: string): boolean {
     return this.selectedCardTypes.includes(option);
   }

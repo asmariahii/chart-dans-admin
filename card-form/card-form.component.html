@@ -4,9 +4,18 @@
 
   <form #form="ngForm" (ngSubmit)="AddDemandeCartes(form)">
     <div class="form-group">
+      <label for="accountType">Type de compte</label>
+      <select id="accountType" class="form-control" name="accountType" required [(ngModel)]="newAccount.accountType">
+        <option value="" disabled selected>Choisir un type de compte</option>
+        <option value="chequier">Compte Chèque</option>
+        <option value="epargne">Compte Epargne</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
       <label for="cardType">Type de carte</label>
       <select class="form-control" id="cardType" name="cardType" [(ngModel)]="cardType" required>
-        <option *ngFor="let option of CardTypeOptions" [value]="option" [disabled]="isCardTypeAlreadySelected(option)">
+        <option *ngFor="let option of CardTypeOptions" [value]="option" >
           {{ option }}
         </option>
       </select>

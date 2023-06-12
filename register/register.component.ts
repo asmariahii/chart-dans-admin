@@ -36,12 +36,13 @@ export class RegisterComponent implements OnInit {
           flName: data.flName,
           email: data.email,
           telephone: data.telephone,
-          adresse: data.adresse,
           accountType: data.accountType, // Ajoutez le champ accountType
           image: 'https://previews.123rf.com/images/salamatik/salamatik1801/salamatik180100019/92979836-ic%C3%B4ne-de-visage-anonyme-de-profil-personne-silhouette-grise-avatar-par-d%C3%A9faut-masculin-photo.jpg',
           demande: '',
           rib: rib, // Utilisez la variable rib générée
           cin: data.cin,
+          region: data.region,
+
 
           uid: user.user?.uid ?? '',
           isActive: false // Définir le compte comme désactivé

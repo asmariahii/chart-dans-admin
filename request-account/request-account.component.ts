@@ -46,7 +46,7 @@ export class RequestAccountComponent implements OnInit {
   newAccount: UserData = {
     account: {},
     solde: '10.000',
-    rib: '',
+    rib: this.generateRandomRib(), // Générez le numéro de RIB
     accountType: ''
 
   };
@@ -96,6 +96,12 @@ export class RequestAccountComponent implements OnInit {
       }
     });
   }
+  
+  generateRandomRib(): string {
+    const randomDigits = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+    return `1000403451419027${randomDigits}`;
+  }
+
 
   submitAccountForm(accountForm: NgForm) {
     if (accountForm.valid) {
@@ -105,14 +111,14 @@ export class RequestAccountComponent implements OnInit {
         [`account.${accountData.accountType}`]: {
           accountType: accountData.accountType,
           solde: '',
-          rib: ''
+          rib: this.generateRandomRib() // Générez le numéro de RIB
         }
       })
       .then(() => {
         this.userAccounts.push({
           accountType: accountData.accountType,
           solde: '',
-          rib: ''
+          rib: this.generateRandomRib() // Générez le numéro de RIB
         });
 
         accountForm.resetForm();

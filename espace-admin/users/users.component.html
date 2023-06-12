@@ -20,7 +20,7 @@
             <label for="flName">Nom et Prénom</label>
             <input type="text" class="form-control" id="flName" name="flName" #flName="ngModel" ngModel required
               [class.is-invalid]="flName.touched && flName.invalid">
-            <div class="invalid-feedback" *ngIf="flName.touched && flName.invalid">
+            <div class="invalid-feedback">
               <div *ngIf="flName.errors?.['required'] && flName.touched">Le nom et prénom sont obligatoires.</div>
             </div>
           </div>
@@ -28,7 +28,7 @@
             <label for="telephone">Numéro de téléphone</label>
             <input type="tel" class="form-control" id="telephone" name="telephone" #telephone="ngModel" ngModel pattern="^\+216[0-9]{7,8}$" required
               [class.is-invalid]="telephone.touched && telephone.invalid">
-            <div class="invalid-feedback" *ngIf="telephone.touched && telephone.invalid">
+            <div class="invalid-feedback">
               <div *ngIf="telephone.errors?.['required'] && telephone.touched">Le numéro de téléphone est obligatoire.</div>
               <div *ngIf="telephone.errors?.['pattern'] && telephone.touched">Le numéro de téléphone doit être au format +216xxxxxxxx ou +216xxxxxxxxx.</div>
             </div>
@@ -37,18 +37,24 @@
             <label for="cin">CIN</label>
             <input type="text" class="form-control" id="cin" name="cin" #cin="ngModel" ngModel pattern="^\d{8}$" required
               [class.is-invalid]="cin.touched && cin.invalid">
-            <div class="invalid-feedback" *ngIf="cin.touched && cin.invalid">
+            <div class="invalid-feedback">
               <div *ngIf="cin.errors?.['required'] && cin.touched">Le numéro de carte d'identité tunisienne est obligatoire.</div>
               <div *ngIf="cin.errors?.['pattern'] && cin.touched">Le numéro de carte d'identité tunisienne doit être composé de 8 chiffres.</div>
             </div>
           </div>
           <div class="form-group">
-            <label for="adresse">Adresse</label>
-            <input type="text" class="form-control" id="adresse" name="adresse" #adresse="ngModel" ngModel required
-              [class.is-invalid]="adresse.touched && adresse.invalid">
-            <div class="invalid-feedback" *ngIf="adresse.touched && adresse.invalid">
-              <div *ngIf="adresse.errors?.['required'] && adresse.touched">Le champ adresse est obligatoire.</div>
-            </div>
+            <label>Région</label>
+            <select class="form-control" id="region" name="region" #region="ngModel" ngModel required
+            [class.is-invalid]="region.touched && region.invalid">
+              <option value="" disabled selected>Choisissez la région</option>
+              <option value="Tunis">Tunis</option>
+              <option value="Ariana">Ariana</option>
+              <option value="Ben Arous">Ben Arous</option>
+              <!-- Ajoutez d'autres options pour les régions de la Tunisie -->
+            </select>
+            <div class="invalid-feedback">
+            <div *ngIf="region.errors?.['required'] && region.touched">Veuillez choisir une région.</div>
+          </div>
           </div>
           <div class="form-group">
             <label for="accountType">Choisissez le type de compte :</label>
@@ -57,9 +63,8 @@
               <option value="" disabled selected>Choisissez le type de compte</option>
               <option value="epargne">Compte épargne</option>
               <option value="chequier">Compte chéquier</option>
-
             </select>
-            <div class="invalid-feedback" *ngIf="accountType.errors?.['required'] && accountType.touched">
+            <div class="invalid-feedback">
               <div *ngIf="accountType.errors?.['required'] && accountType.touched">Veuillez choisir un type de compte.</div>
             </div>
           </div>
@@ -67,7 +72,7 @@
             <label for="email">Email</label>
             <input type="email" class="form-control" id="email" name="email" #email="ngModel" ngModel required email
               [class.is-invalid]="email.touched && email.invalid">
-            <div class="invalid-feedback" *ngIf="email.touched && email.invalid">
+            <div class="invalid-feedback">
               <div *ngIf="email.errors?.['required'] && email.touched">L'e-mail est obligatoire.</div>
               <div *ngIf="email.errors?.['email'] && email.touched">L'e-mail doit être au format valide.</div>
             </div>
@@ -76,7 +81,7 @@
             <label for="password">Mot de passe</label>
             <input type="password" class="form-control" id="password" name="password" #password="ngModel" ngModel required minlength="8"
               [class.is-invalid]="password.touched && password.invalid">
-            <div class="invalid-feedback" *ngIf="password.touched && password.invalid">
+            <div class="invalid-feedback">
               <div *ngIf="password.errors?.['required'] && password.touched">Le mot de passe est obligatoire.</div>
               <div *ngIf="password.errors?.['minlength'] && password.touched">Le mot de passe doit contenir au moins 8 caractères.</div>
             </div>
@@ -85,7 +90,7 @@
             <label for="confirmPassword">Confirm password</label>
             <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" #confirmPassword="ngModel" ngModel required minlength="8"
               [class.is-invalid]="confirmPassword.touched && confirmPassword.invalid">
-            <div class="invalid-feedback" *ngIf="confirmPassword.touched && confirmPassword.invalid">
+            <div class="invalid-feedback">
               <div *ngIf="confirmPassword.errors?.['required'] && confirmPassword.touched">Le champ de confirmation du mot de passe est obligatoire.</div>
               <div *ngIf="confirmPassword.errors?.['minlength'] && confirmPassword.touched">Le champ de confirmation du mot de passe doit contenir au moins 8 caractères.</div>
               <div *ngIf="password.value !== confirmPassword.value && confirmPassword.touched">Les mots de passe ne correspondent pas.</div>
@@ -99,6 +104,7 @@
     </div>
   </div>
 </div>
+
 
 
 
@@ -146,4 +152,4 @@
     <tr mat-row *matRowDef="let user; columns: displayedColumns;"></tr>
   </table>
 
-  
+ 

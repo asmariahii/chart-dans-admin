@@ -3,6 +3,7 @@ import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/comp
 import { map } from 'rxjs/operators';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import Chart from 'chart.js/auto';
 
 interface DemandeCheque {
   uid: string;
@@ -13,6 +14,7 @@ interface DemandeCheque {
   statut: string;
   action: string;
   docId?: string; // Added property for document ID
+  
 }
 
 @Component({
@@ -24,8 +26,10 @@ export class DemandeChequeComponent implements OnInit {
   demandeChequeCollection: AngularFirestoreCollection<DemandeCheque> | undefined;
   demandeCheque: any;
   dataSource: MatTableDataSource<DemandeCheque>;
+  filterValue: string = '';
 
-  displayedColumns: string[] = ['email', 'nombreChequier', 'rib', 'cin', 'action', 'statut'];
+
+  displayedColumns: string[] = ['email', 'nombreChequier',  'cin', 'action', 'statut'];
 
   constructor(private fs: AngularFirestore, private snackBar: MatSnackBar) {
     this.dataSource = new MatTableDataSource<DemandeCheque>([]);
@@ -49,9 +53,15 @@ export class DemandeChequeComponent implements OnInit {
       );
       this.demandeCheque.subscribe((data: DemandeCheque[]) => {
         this.dataSource.data = data;
+        this.createRequestStatusChart(); // Generate the request status chart
       });
     }
   }
+ 
+  applyFilter(): void {
+    this.dataSource.filter = this.filterValue.trim().toLowerCase();
+  }
+
 
   refuserDemande(demande: DemandeCheque): void {
     demande.statut = 'Demande refusée';
@@ -72,5 +82,70 @@ export class DemandeChequeComponent implements OnInit {
       this.demandeChequeCollection.doc(docId).update(updatedDemande);
     }
   }
+
+ 
   
-}
+  createRequestStatusChart() {
+    const totalUsers = this.dataSource.data.length; // Total des utilisateurs
+    const totalAcceptedRequests = this.dataSource.data.filter(d => d.statut === 'Demande acceptée').length; // Total des demandes acceptées
+    const totalRejectedRequests = this.dataSource.data.filter(d => d.statut === 'Demande refusée').length; // Total des demandes refusées
+    const totalPendingRequests = totalUsers - totalAcceptedRequests - totalRejectedRequests; // Total des demandes en attente
+  
+    const chartElement = document.getElementById('userRequestChart') as HTMLCanvasElement;
+    const ctx = chartElement.getContext('2d');
+  
+    if (ctx) {
+      const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Utilisateurs'],
+          datasets: [{
+            label: 'Utilisateurs avec demande acceptée',
+            data: [totalAcceptedRequests],
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+          },
+          {
+            label: 'Utilisateurs avec demande refusée',
+            data: [totalRejectedRequests],
+            backgroundColor: 'rgba(192, 75, 75, 0.2)',
+            borderColor: 'rgba(192, 75, 75, 1)',
+            borderWidth: 1
+          },
+          {
+            label: 'Utilisateurs avec demande en attente',
+            data: [totalPendingRequests],
+            backgroundColor: 'rgba(192, 192, 75, 0.2)',
+            borderColor: 'rgba(192, 192, 75, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          plugins: {
+            legend: {
+              labels: {
+                color: 'white',
+                font: {
+                  size: 25
+                },
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                precision: 0
+              }
+            }
+          }
+        }
+      });
+    }
+  }
+  
+      }
+    
+  
+

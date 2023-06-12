@@ -46,6 +46,7 @@ import { MessagingService } from '../service/messaging.service';
     MatCardModule,
     MatFormFieldModule,
     MatSnackBarModule, // Ajoutez cette ligne pour importer le module MatSnackBar
+    
 
     
     

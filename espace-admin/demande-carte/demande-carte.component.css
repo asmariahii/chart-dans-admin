@@ -1,17 +1,3 @@
-.button-container {
-  display: flex;
-  gap: 10px; /* Espacement entre les boutons */
-}
-
-.accept-button {
-  background-color: rgb(113, 214, 113); /* Couleur du bouton "Accepter" */
-  color: white;
-}
-
-.refuse-button {
-  background-color: rgb(192, 60, 60); /* Couleur du bouton "Refuser" */
-  color: white;
-}
 .mat-table {
   background-color: rgb(157, 192, 245); /* Replace "red" with your desired color */
 }

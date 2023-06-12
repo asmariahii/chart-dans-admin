@@ -15,6 +15,7 @@ interface DemandeCheque {
   statut: string;
 }
 
+
 @Component({
   selector: 'app-cheque-form',
   templateUrl: './cheque-form.component.html',
@@ -82,7 +83,7 @@ export class ChequeFormComponent implements OnInit {
         email: email || '',
         cin: cin || '',
         rib: rib || '',
-        statut: '' // Le statut est vide ici
+        statut: 'demande en attente' // Le statut est vide ici
       };
 
       const docRef = await this.demandeChequeCollection.add(demandeCheque);
